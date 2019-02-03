@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".chat.ChatActivity"
+    tools:showIn="@layout/activity_chat">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.stfalcon.chatkit.messages.MessagesList
+            android:id="@+id/messages_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/input"
+            app:textAutoLink="all"/>
+
+        <com.stfalcon.chatkit.messages.MessageInput
+            android:id="@+id/input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:inputHint="@string/hint_enter_a_message"
+            app:showAttachmentButton="false"
+            app:attachmentButtonDefaultIconColor="@color/accent"
+            app:attachmentButtonDefaultIconPressedColor="@color/md_white_1000"
+            app:inputButtonDefaultIconColor="@color/md_white_1000"
+            app:inputButtonDefaultBgColor="@color/accent"
+            app:inputButtonDefaultBgDisabledColor="@color/accent"
+            app:inputButtonDefaultIconDisabledColor="@color/md_white_1000"
+            app:inputButtonDefaultBgPressedColor="@color/md_grey_300"
+            app:inputButtonDefaultIconPressedColor="@color/accent"/>
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

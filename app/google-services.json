@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "770953573766",
+    "firebase_url": "https://indikator-strategis-ntt.firebaseio.com",
+    "project_id": "indikator-strategis-ntt",
+    "storage_bucket": "indikator-strategis-ntt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770953573766:android:76c16a551a4b6b8f",
+        "android_client_info": {
+          "package_name": "ntt.bps.namberwan.adminkonsultasistatistik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770953573766-a1mffh71683bgckogcqpscn6kiuog18o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD16n4s4QkxPI9A4Ch-otsUlC-nCd-jexk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770953573766:android:98253d42121ef34a",
+        "android_client_info": {
+          "package_name": "ntt.bps.namberwan.allstatntt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770953573766-pfjhbqmptdnv7kq8acoq6nknocqj6si0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ntt.bps.namberwan.allstatntt",
+            "certificate_hash": "30785b06280e7b8b2adaa3d34574b3195e1525d1"
+          }
+        },
+        {
+          "client_id": "770953573766-a1mffh71683bgckogcqpscn6kiuog18o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD16n4s4QkxPI9A4Ch-otsUlC-nCd-jexk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "770953573766-a1mffh71683bgckogcqpscn6kiuog18o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
