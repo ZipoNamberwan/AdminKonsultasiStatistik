@@ -285,6 +285,22 @@ public class ChatActivity extends AppCompatActivity implements MessageInput.Inpu
         Message message = new Message(idSender, sender, input.toString());
         adapter.addToStart(message, true);
 
+        /*final DatabaseReference chatRef = firebaseDatabase.getReference("Chatlist").child(idSender).child(idReceiver);
+
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()){
+                    chatRef.child("id").setValue(idReceiver);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
         if (notify) {
             sendNotification(idReceiver, userModel.getUsername(), input.toString());
         }

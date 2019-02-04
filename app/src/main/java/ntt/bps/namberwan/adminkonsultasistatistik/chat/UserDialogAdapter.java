@@ -43,8 +43,6 @@ public class UserDialogAdapter extends RecyclerView.Adapter<UserDialogAdapter.Ho
         final UserModel user = getList().get(position);
         holder.bind(user, listener);
         holder.nama.setText(user.getUsername());
-        String adminNoString = "Admin - "+ (position+1);
-        holder.adminNo.setText(adminNoString);
 
         if (user.getIsOnline()){
             holder.lastSeen.setText("Online");
@@ -77,14 +75,12 @@ public class UserDialogAdapter extends RecyclerView.Adapter<UserDialogAdapter.Ho
     public static class Holder extends RecyclerView.ViewHolder {
 
         TextView nama;
-        TextView adminNo;
         TextView lastSeen;
         ImageView photo;
 
         public Holder(View itemView) {
             super(itemView);
             nama = itemView.findViewById(R.id.nama);
-            adminNo = itemView.findViewById(R.id.admin_no);
             lastSeen = itemView.findViewById(R.id.last_seen);
             photo = itemView.findViewById(R.id.foto);
         }
