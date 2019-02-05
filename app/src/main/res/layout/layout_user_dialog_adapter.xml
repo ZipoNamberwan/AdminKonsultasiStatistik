@@ -22,14 +22,13 @@
                 android:layout_margin="10dp"
                 android:contentDescription="@string/app_name"/>-->
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:id="@+id/foto"
                 android:layout_margin="10dp"
                 android:contentDescription="@string/app_name"
-                app:civ_border_width="2dp"
-                app:civ_border_color="@color/md_grey_300"/><!--
+                app:srcCompat="@drawable/ic_person_grey_24dp"/><!--
                 app:civ_border_width="2dp"
                 app:civ_border_color="#FF000000"-->
             <RelativeLayout

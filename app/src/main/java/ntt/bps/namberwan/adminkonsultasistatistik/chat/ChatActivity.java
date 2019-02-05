@@ -278,33 +278,44 @@ public class ChatActivity extends AppCompatActivity implements MessageInput.Inpu
         hashMap.put("sender", sender.getId());
         hashMap.put("receiver", receiver.getId());
         hashMap.put("message", input.toString());
-        hashMap.put("createdAt", System.currentTimeMillis());
+        long now = System.currentTimeMillis();
+        hashMap.put("createdAt", now);
 
         reference.child("Chats").child(idChat).push().setValue(hashMap);
 
         Message message = new Message(idSender, sender, input.toString());
         adapter.addToStart(message, true);
 
-        /*final DatabaseReference chatRef = firebaseDatabase.getReference("Chatlist").child(idSender).child(idReceiver);
-
-        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()){
-                    chatRef.child("id").setValue(idReceiver);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
-
         if (notify) {
             sendNotification(idReceiver, userModel.getUsername(), input.toString());
         }
         notify = false;
+
+        makeChatList(input.toString(), now);
+    }
+
+    private void makeChatList(String input, long now) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(userModel.getId());
+
+        Map<String, Object> update = new HashMap<>();
+        update.put("username", receiver.getName());
+        if (receiver.getAvatar() != null){
+            update.put("urlPhoto", receiver.getAvatar());
+        } else {
+            update.put("urlPhoto", "");
+        }
+
+        update.put("lastMessage", input);
+
+        update.put("messageSent", now);
+
+        update.put("idSender", userModel.getId());
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + idReceiver + "/", update);
+
+        reference.updateChildren(childUpdates);
     }
 
     private void sendNotification(String receiver, final String username, final String message){
@@ -321,11 +332,7 @@ public class ChatActivity extends AppCompatActivity implements MessageInput.Inpu
                     apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<MyResponse> call, Response<MyResponse> response) {
-                            /*if (response.code() == 200){
-                                if (response.body().success == 1){
-                                    Toast.makeText(ChatActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                                }
-                            }*/
+
                         }
 
                         @Override

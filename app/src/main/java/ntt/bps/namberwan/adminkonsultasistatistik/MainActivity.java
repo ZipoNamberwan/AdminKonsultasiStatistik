@@ -26,10 +26,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 
 import ntt.bps.namberwan.adminkonsultasistatistik.chat.ChatActivity;
 import ntt.bps.namberwan.adminkonsultasistatistik.chat.ChatUtils;
+import ntt.bps.namberwan.adminkonsultasistatistik.chat.Dialog;
 import ntt.bps.namberwan.adminkonsultasistatistik.chat.RecyclerViewClickListener;
 import ntt.bps.namberwan.adminkonsultasistatistik.chat.UserDialogAdapter;
 import ntt.bps.namberwan.adminkonsultasistatistik.chat.UserModel;
@@ -46,8 +50,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private UserModel userModel;
 
-    private ArrayList<String> listIdUsers;
-    private ArrayList<UserModel> userModels;
+    private ArrayList<Dialog> dialogs;
+
+    private boolean isFirstCreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         listCardView = findViewById(R.id.card_view);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        isFirstCreated = true;
     }
 
     @Override
@@ -79,13 +86,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // User is already signed in. Therefore, display
             // a welcome Toast
-            Toast.makeText(this,
-                    "Welcome " + FirebaseAuth.getInstance()
-                            .getCurrentUser()
-                            .getDisplayName(),
-                    Toast.LENGTH_LONG)
-                    .show();
+            if (isFirstCreated){
+                Toast.makeText(this,
+                        "Welcome " + FirebaseAuth.getInstance()
+                                .getCurrentUser()
+                                .getDisplayName(),
+                        Toast.LENGTH_LONG)
+                        .show();
 
+                isFirstCreated = false;
+            }
             setupDialogList();
         }
     }
@@ -131,71 +141,46 @@ public class MainActivity extends AppCompatActivity {
 
         listCardView.setVisibility(View.GONE);
 
-        listIdUsers = new ArrayList<>();
+        dialogs = new ArrayList<>();
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Chats");
+        DatabaseReference ref = reference.child("Chatlist").child(userModel.getId());
 
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.getKey().contains(userModel.getId())){
-                    String userId = dataSnapshot.getKey().replace(userModel.getId(), "");
-                    if (!userId.equals("")){
-                        listIdUsers.add(userId);
-                    }
-                }
-                getDialogs();
-            }
+                Dialog dialog = dataSnapshot.getValue(Dialog.class);
+                dialog.setId(dataSnapshot.getKey());
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void getDialogs() {
-
-        userModels = new ArrayList<>();
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                for (String id : listIdUsers){
-                    if (id.equals(dataSnapshot.getKey())){
-                        UserModel temp = dataSnapshot.child("information").getValue(UserModel.class);
-                        temp.setId(id);
-                        if (!isUserExist(temp)){
-                            userModels.add(temp);
-                        }
+                boolean isExist = false;
+                for (int i = 0; i < dialogs.size(); i++){
+                    if (dialog.getId().equals(dialogs.get(i).getId())){
+                        dialogs.remove(i);
+                        dialogs.add(dialog);
+                        isExist = true;
                     }
                 }
 
-                UserDialogAdapter adapter = new UserDialogAdapter(userModels, MainActivity.this, new RecyclerViewClickListener() {
+                if (!isExist){
+                    dialogs.add(dialog);
+                }
+
+                Collections.sort(dialogs, new Comparator<Dialog>() {
+                    @Override
+                    public int compare(Dialog o1, Dialog o2) {
+                        Long a = o1.getMessageSent();
+                        Long b = o2.getMessageSent();
+                        return -a.compareTo(b);
+                    }
+                });
+
+                UserDialogAdapter adapter = new UserDialogAdapter(dialogs, MainActivity.this, new RecyclerViewClickListener() {
                     @Override
                     public void onItemClick(Object object) {
                         Intent i = new Intent(MainActivity.this, ChatActivity.class);
-                        i.putExtra(ChatActivity.ID_ADMIN_RECEIVER, ((UserModel) object).getId());
+                        i.putExtra(ChatActivity.ID_ADMIN_RECEIVER, ((Dialog) object).getId());
                         i.putExtra(ChatActivity.ID_USER_SENDER, userModel.getId());
-                        i.putExtra(ChatActivity.USERNAME_RECEIVER, ((UserModel) object).getUsername());
-                        i.putExtra(ChatActivity.URL_PHOTO_RECEIVER, ((UserModel) object).getUrlPhoto());
+                        i.putExtra(ChatActivity.USERNAME_RECEIVER, ((Dialog) object).getUsername());
+                        i.putExtra(ChatActivity.URL_PHOTO_RECEIVER, ((Dialog) object).getUrlPhoto());
                         startActivity(i);
                     }
                 });
@@ -208,7 +193,47 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Dialog dialog = dataSnapshot.getValue(Dialog.class);
+                dialog.setId(dataSnapshot.getKey());
 
+                boolean isExist = false;
+                for (int i = 0; i < dialogs.size(); i++){
+                    if (dialog.getId().equals(dialogs.get(i).getId())){
+                        dialogs.remove(i);
+                        dialogs.add(dialog);
+                        isExist = true;
+                    }
+                }
+
+                if (!isExist){
+                    dialogs.add(dialog);
+                }
+
+                Collections.sort(dialogs, new Comparator<Dialog>() {
+                    @Override
+                    public int compare(Dialog o1, Dialog o2) {
+                        Long a = o1.getMessageSent();
+                        Long b = o2.getMessageSent();
+                        return -a.compareTo(b);
+                    }
+                });
+
+                UserDialogAdapter adapter = new UserDialogAdapter(dialogs, MainActivity.this, new RecyclerViewClickListener() {
+                    @Override
+                    public void onItemClick(Object object) {
+                        Intent i = new Intent(MainActivity.this, ChatActivity.class);
+                        i.putExtra(ChatActivity.ID_ADMIN_RECEIVER, ((Dialog) object).getId());
+                        i.putExtra(ChatActivity.ID_USER_SENDER, userModel.getId());
+                        i.putExtra(ChatActivity.USERNAME_RECEIVER, ((Dialog) object).getUsername());
+                        i.putExtra(ChatActivity.URL_PHOTO_RECEIVER, ((Dialog) object).getUrlPhoto());
+                        startActivity(i);
+                    }
+                });
+
+                recyclerView.setAdapter(adapter);
+
+                listCardView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -226,20 +251,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private boolean isUserExist(UserModel temp) {
-
-        boolean isExist = false;
-
-        for (int i = 0; i < userModels.size(); i++){
-            if (userModels.get(i).getId().equals(temp.getId())){
-                isExist = true;
-                break;
-            }
-        }
-
-        return isExist;
     }
 
     @Override
@@ -320,4 +331,6 @@ public class MainActivity extends AppCompatActivity {
         }*/
         return super.onOptionsItemSelected(item);
     }
+
+
 }
