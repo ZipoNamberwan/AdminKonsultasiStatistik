@@ -28,7 +28,6 @@ import com.google.firebase.database.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 
 import ntt.bps.namberwan.adminkonsultasistatistik.chat.ChatActivity;
@@ -60,6 +59,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            if (bundle.getString("sented") != null){
+                String sender = bundle.getString("sented");
+                String receiver = bundle.getString("user");
+                String username = bundle.getString("username");
+                String photo = bundle.getString("photo");
+
+                Intent i = new Intent(this, ChatActivity.class);
+                i.putExtra(ChatActivity.ID_ADMIN_RECEIVER, receiver);
+                i.putExtra(ChatActivity.ID_USER_SENDER, sender);
+                i.putExtra(ChatActivity.USERNAME_RECEIVER, username);
+                i.putExtra(ChatActivity.URL_PHOTO_RECEIVER, photo);
+                startActivity(i);
+            }
+        }
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

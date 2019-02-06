@@ -327,7 +327,8 @@ public class ChatActivity extends AppCompatActivity implements MessageInput.Inpu
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
                     Data data = new Data(idSender, userModel.getUsername(), userModel.getUrlPhoto(), R.drawable.ic_bps_launcher, message, username + " (Admin BPS)", idReceiver);
-                    Sender sender = new Sender(data, token.getToken());
+                    Data notification = new Data(username, message, ".MainActivity");
+                    Sender sender = new Sender(notification, data, token.getToken(), "high");
 
                     apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
                         @Override
